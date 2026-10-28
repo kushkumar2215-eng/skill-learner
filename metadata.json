@@ -1,0 +1,6 @@
+{
+  "name": "Skill Learner",
+  "description": "Teach. Learn. Connect. Grow. A community-based skill-sharing platform where people discover skills, exchange knowledge, track learning progress, and earn verified achievements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,614 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Publicly discoverable profile for a Skill Learner member (isolated from PII).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the user."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "description": "Public display name."
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "Short biography and learning introduction."
+        },
+        "avatarColor": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Brand theme token for avatar rendering."
+        },
+        "experienceLevel": {
+          "type": "string",
+          "enum": ["Beginner", "Intermediate", "Advanced"],
+          "maxLength": 32,
+          "description": "Overall experience level."
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Preferred language for sessions."
+        },
+        "learningMode": {
+          "type": "string",
+          "enum": ["Online", "In-Person", "Flexible"],
+          "maxLength": 32,
+          "description": "Preferred learning format."
+        },
+        "regionLabel": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "General coarse region or timezone label (never precise address)."
+        },
+        "availability": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "General weekly availability preference."
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Whether the profile appears in public discovery."
+        },
+        "onboardingCompleted": {
+          "type": "boolean",
+          "description": "Whether initial onboarding steps were completed."
+        },
+        "interests": {
+          "type": "array",
+          "description": "Up to 10 learning interest tags."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation server timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update server timestamp."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "bio",
+        "avatarColor",
+        "experienceLevel",
+        "preferredLanguage",
+        "learningMode",
+        "regionLabel",
+        "availability",
+        "isPublic",
+        "onboardingCompleted",
+        "interests",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserPrivateSettings": {
+      "title": "UserPrivateSettings",
+      "description": "Private user account preferences isolated from public profile.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "emailNotifications": {
+          "type": "boolean"
+        },
+        "exchangeAlerts": {
+          "type": "boolean"
+        },
+        "communityUpdates": {
+          "type": "boolean"
+        },
+        "allowDirectRequests": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "emailNotifications",
+        "exchangeAlerts",
+        "communityUpdates",
+        "allowDirectRequests",
+        "updatedAt"
+      ]
+    },
+    "SkillRecord": {
+      "title": "SkillRecord",
+      "description": "A skill offered to teach or wanted to learn by a user.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "type": {
+          "type": "string",
+          "enum": ["teach", "learn"],
+          "maxLength": 16
+        },
+        "level": {
+          "type": "string",
+          "enum": ["Beginner", "Intermediate", "Advanced"],
+          "maxLength": 32
+        },
+        "description": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 600
+        },
+        "deliveryMode": {
+          "type": "string",
+          "enum": ["Online", "In-Person", "Flexible"],
+          "maxLength": 32
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "ownerName",
+        "title",
+        "category",
+        "type",
+        "level",
+        "description",
+        "deliveryMode",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SkillExchange": {
+      "title": "SkillExchange",
+      "description": "A bilateral skill exchange request between two users.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "requesterId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "requesterName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "receiverId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "receiverName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "skillOfferedTitle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "skillRequestedTitle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "introMessage": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 800
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Accepted", "Declined", "Cancelled", "Completed"],
+          "maxLength": 24
+        },
+        "completionNotes": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "requesterId",
+        "requesterName",
+        "receiverId",
+        "receiverName",
+        "skillOfferedTitle",
+        "skillRequestedTitle",
+        "introMessage",
+        "status",
+        "completionNotes",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ExchangeMessage": {
+      "title": "ExchangeMessage",
+      "description": "A message inside a skill exchange conversation.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "exchangeId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "requesterId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "receiverId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "senderId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "senderName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "exchangeId",
+        "requesterId",
+        "receiverId",
+        "senderId",
+        "senderName",
+        "content",
+        "createdAt"
+      ]
+    },
+    "LearningGoal": {
+      "title": "LearningGoal",
+      "description": "A user's personal learning goal and progress tracker.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "skillTitle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "targetSessions": {
+          "type": "number"
+        },
+        "completedSessions": {
+          "type": "number"
+        },
+        "progressPercent": {
+          "type": "number"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "Completed"],
+          "maxLength": 24
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "skillTitle",
+        "category",
+        "targetSessions",
+        "completedSessions",
+        "progressPercent",
+        "notes",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "LearningActivity": {
+      "title": "LearningActivity",
+      "description": "A logged learning session or milestone activity.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "goalId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "durationMinutes": {
+          "type": "number"
+        },
+        "reflection": {
+          "type": "string",
+          "maxLength": 800
+        },
+        "completedDate": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "goalId",
+        "title",
+        "durationMinutes",
+        "reflection",
+        "completedDate",
+        "createdAt"
+      ]
+    },
+    "NotificationItem": {
+      "title": "NotificationItem",
+      "description": "An in-app notification for a user.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "recipientId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "senderId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["exchange_request", "exchange_update", "achievement", "community", "system"],
+          "maxLength": 32
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "body": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 400
+        },
+        "linkPath": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "isRead": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "recipientId",
+        "senderId",
+        "type",
+        "title",
+        "body",
+        "linkPath",
+        "isRead",
+        "createdAt"
+      ]
+    },
+    "PeerConnection": {
+      "title": "PeerConnection",
+      "description": "A community connection between two learners.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "initiatorId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "initiatorName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "peerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "peerName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "sharedSkill": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Connected", "Muted"],
+          "maxLength": 24
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "initiatorId",
+        "initiatorName",
+        "peerId",
+        "peerName",
+        "sharedSkill",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Public user profiles (PII-free)."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": "UserPrivateSettings",
+      "description": "Private user account and notification settings."
+    },
+    "/skills/{skillId}": {
+      "schema": "SkillRecord",
+      "description": "Skills offered to teach or requested to learn."
+    },
+    "/skillExchanges/{exchangeId}": {
+      "schema": "SkillExchange",
+      "description": "Skill exchange requests between learners and mentors."
+    },
+    "/skillExchanges/{exchangeId}/messages/{messageId}": {
+      "schema": "ExchangeMessage",
+      "description": "Messages belonging to a specific skill exchange."
+    },
+    "/learningGoals/{goalId}": {
+      "schema": "LearningGoal",
+      "description": "Personal learning goals tracked by users."
+    },
+    "/learningActivities/{activityId}": {
+      "schema": "LearningActivity",
+      "description": "Completed learning sessions and reflections."
+    },
+    "/notifications/{notificationId}": {
+      "schema": "NotificationItem",
+      "description": "In-app notifications for users."
+    },
+    "/connections/{connectionId}": {
+      "schema": "PeerConnection",
+      "description": "Community connections between learners."
+    }
+  }
+}

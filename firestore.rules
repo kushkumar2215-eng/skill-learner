@@ -1,0 +1,503 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 0: Global Default-Deny Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. UserProfile Validation Blueprint (/users/{userId})
+    function isValidUserProfile(data) {
+      return data.keys().hasAll([
+        'uid', 'displayName', 'bio', 'avatarColor', 'experienceLevel',
+        'preferredLanguage', 'learningMode', 'regionLabel', 'availability',
+        'isPublic', 'onboardingCompleted', 'interests', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid', 'displayName', 'bio', 'avatarColor', 'experienceLevel',
+        'preferredLanguage', 'learningMode', 'regionLabel', 'availability',
+        'isPublic', 'onboardingCompleted', 'interests', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.uid) &&
+      data.uid == request.auth.uid &&
+      data.displayName is string && data.displayName.size() >= 2 && data.displayName.size() <= 80 &&
+      data.bio is string && data.bio.size() <= 600 &&
+      data.avatarColor is string && data.avatarColor.size() >= 1 && data.avatarColor.size() <= 32 &&
+      data.experienceLevel is string && data.experienceLevel.size() <= 32 &&
+      (data.experienceLevel == 'Beginner' || data.experienceLevel == 'Intermediate' || data.experienceLevel == 'Advanced') &&
+      data.preferredLanguage is string && data.preferredLanguage.size() >= 1 && data.preferredLanguage.size() <= 40 &&
+      data.learningMode is string && data.learningMode.size() <= 32 &&
+      (data.learningMode == 'Online' || data.learningMode == 'In-Person' || data.learningMode == 'Flexible') &&
+      data.regionLabel is string && data.regionLabel.size() <= 80 &&
+      data.availability is string && data.availability.size() <= 120 &&
+      data.isPublic is bool &&
+      data.onboardingCompleted is bool &&
+      data.interests is list && data.interests.size() <= 10 &&
+      (data.interests.size() == 0 || (data.interests[0] is string && data.interests[0].size() <= 40)) &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 2. UserPrivateSettings Validation Blueprint (/users/{userId}/private/{docId})
+    function isValidUserPrivateSettings(data) {
+      return data.keys().hasAll([
+        'uid', 'emailNotifications', 'exchangeAlerts', 'communityUpdates', 'allowDirectRequests', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid', 'emailNotifications', 'exchangeAlerts', 'communityUpdates', 'allowDirectRequests', 'updatedAt'
+      ]) &&
+      isValidId(data.uid) &&
+      data.uid == request.auth.uid &&
+      data.emailNotifications is bool &&
+      data.exchangeAlerts is bool &&
+      data.communityUpdates is bool &&
+      data.allowDirectRequests is bool &&
+      data.updatedAt is timestamp;
+    }
+
+    // 3. SkillRecord Validation Blueprint (/skills/{skillId})
+    function isValidSkillRecord(data) {
+      return data.keys().hasAll([
+        'id', 'ownerId', 'ownerName', 'title', 'category', 'type',
+        'level', 'description', 'deliveryMode', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'ownerId', 'ownerName', 'title', 'category', 'type',
+        'level', 'description', 'deliveryMode', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.ownerId) &&
+      data.ownerId == request.auth.uid &&
+      data.ownerName is string && data.ownerName.size() >= 2 && data.ownerName.size() <= 80 &&
+      data.title is string && data.title.size() >= 2 && data.title.size() <= 100 &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 80 &&
+      data.type is string && data.type.size() <= 16 && (data.type == 'teach' || data.type == 'learn') &&
+      data.level is string && data.level.size() <= 32 &&
+      (data.level == 'Beginner' || data.level == 'Intermediate' || data.level == 'Advanced') &&
+      data.description is string && data.description.size() >= 5 && data.description.size() <= 600 &&
+      data.deliveryMode is string && data.deliveryMode.size() <= 32 &&
+      (data.deliveryMode == 'Online' || data.deliveryMode == 'In-Person' || data.deliveryMode == 'Flexible') &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 4. SkillExchange Validation Blueprint (/skillExchanges/{exchangeId})
+    function isValidSkillExchangeShape(data) {
+      return data.keys().hasAll([
+        'id', 'requesterId', 'requesterName', 'receiverId', 'receiverName',
+        'skillOfferedTitle', 'skillRequestedTitle', 'introMessage', 'status',
+        'completionNotes', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'requesterId', 'requesterName', 'receiverId', 'receiverName',
+        'skillOfferedTitle', 'skillRequestedTitle', 'introMessage', 'status',
+        'completionNotes', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.requesterId) &&
+      isValidId(data.receiverId) &&
+      data.requesterId != data.receiverId &&
+      data.requesterName is string && data.requesterName.size() >= 2 && data.requesterName.size() <= 80 &&
+      data.receiverName is string && data.receiverName.size() >= 2 && data.receiverName.size() <= 80 &&
+      data.skillOfferedTitle is string && data.skillOfferedTitle.size() >= 2 && data.skillOfferedTitle.size() <= 100 &&
+      data.skillRequestedTitle is string && data.skillRequestedTitle.size() >= 2 && data.skillRequestedTitle.size() <= 100 &&
+      data.introMessage is string && data.introMessage.size() >= 5 && data.introMessage.size() <= 800 &&
+      data.status is string && data.status.size() <= 24 &&
+      (data.status == 'Pending' || data.status == 'Accepted' || data.status == 'Declined' || data.status == 'Cancelled' || data.status == 'Completed') &&
+      data.completionNotes is string && data.completionNotes.size() <= 600 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 5. ExchangeMessage Validation Blueprint (/skillExchanges/{exchangeId}/messages/{messageId})
+    function isValidExchangeMessage(data) {
+      return data.keys().hasAll([
+        'id', 'exchangeId', 'requesterId', 'receiverId', 'senderId', 'senderName', 'content', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'exchangeId', 'requesterId', 'receiverId', 'senderId', 'senderName', 'content', 'createdAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.exchangeId) &&
+      isValidId(data.requesterId) &&
+      isValidId(data.receiverId) &&
+      isValidId(data.senderId) &&
+      data.senderId == request.auth.uid &&
+      (data.senderId == data.requesterId || data.senderId == data.receiverId) &&
+      data.senderName is string && data.senderName.size() >= 2 && data.senderName.size() <= 80 &&
+      data.content is string && data.content.size() >= 1 && data.content.size() <= 1000 &&
+      data.createdAt is timestamp;
+    }
+
+    // 6. LearningGoal Validation Blueprint (/learningGoals/{goalId})
+    function isValidLearningGoal(data) {
+      return data.keys().hasAll([
+        'id', 'ownerId', 'skillTitle', 'category', 'targetSessions',
+        'completedSessions', 'progressPercent', 'notes', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'ownerId', 'skillTitle', 'category', 'targetSessions',
+        'completedSessions', 'progressPercent', 'notes', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.ownerId) &&
+      data.ownerId == request.auth.uid &&
+      data.skillTitle is string && data.skillTitle.size() >= 2 && data.skillTitle.size() <= 100 &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 80 &&
+      data.targetSessions is number && data.targetSessions >= 1 && data.targetSessions <= 500 &&
+      data.completedSessions is number && data.completedSessions >= 0 && data.completedSessions <= 500 &&
+      data.progressPercent is number && data.progressPercent >= 0 && data.progressPercent <= 100 &&
+      data.notes is string && data.notes.size() <= 600 &&
+      data.status is string && data.status.size() <= 24 && (data.status == 'Active' || data.status == 'Completed') &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 7. LearningActivity Validation Blueprint (/learningActivities/{activityId})
+    function isValidLearningActivity(data) {
+      return data.keys().hasAll([
+        'id', 'ownerId', 'goalId', 'title', 'durationMinutes', 'reflection', 'completedDate', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'ownerId', 'goalId', 'title', 'durationMinutes', 'reflection', 'completedDate', 'createdAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.ownerId) &&
+      data.ownerId == request.auth.uid &&
+      isValidId(data.goalId) &&
+      data.title is string && data.title.size() >= 2 && data.title.size() <= 120 &&
+      data.durationMinutes is number && data.durationMinutes >= 5 && data.durationMinutes <= 600 &&
+      data.reflection is string && data.reflection.size() <= 800 &&
+      data.completedDate is string && data.completedDate.size() >= 4 && data.completedDate.size() <= 32 &&
+      data.createdAt is timestamp;
+    }
+
+    // 8. NotificationItem Validation Blueprint (/notifications/{notificationId})
+    function isValidNotificationItem(data) {
+      return data.keys().hasAll([
+        'id', 'recipientId', 'senderId', 'type', 'title', 'body', 'linkPath', 'isRead', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'recipientId', 'senderId', 'type', 'title', 'body', 'linkPath', 'isRead', 'createdAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.recipientId) &&
+      isValidId(data.senderId) &&
+      data.type is string && data.type.size() <= 32 &&
+      (data.type == 'exchange_request' || data.type == 'exchange_update' || data.type == 'achievement' || data.type == 'community' || data.type == 'system') &&
+      data.title is string && data.title.size() >= 2 && data.title.size() <= 120 &&
+      data.body is string && data.body.size() >= 2 && data.body.size() <= 400 &&
+      data.linkPath is string && data.linkPath.size() >= 1 && data.linkPath.size() <= 120 &&
+      data.isRead is bool &&
+      data.createdAt is timestamp;
+    }
+
+    // 9. PeerConnection Validation Blueprint (/connections/{connectionId})
+    function isValidPeerConnection(data) {
+      return data.keys().hasAll([
+        'id', 'initiatorId', 'initiatorName', 'peerId', 'peerName', 'sharedSkill', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'initiatorId', 'initiatorName', 'peerId', 'peerName', 'sharedSkill', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.id) &&
+      isValidId(data.initiatorId) &&
+      data.initiatorId == request.auth.uid &&
+      isValidId(data.peerId) &&
+      data.initiatorId != data.peerId &&
+      data.initiatorName is string && data.initiatorName.size() >= 2 && data.initiatorName.size() <= 80 &&
+      data.peerName is string && data.peerName.size() >= 2 && data.peerName.size() <= 80 &&
+      data.sharedSkill is string && data.sharedSkill.size() >= 2 && data.sharedSkill.size() <= 100 &&
+      data.status is string && data.status.size() <= 24 && (data.status == 'Connected' || data.status == 'Muted') &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Collection 1: /users/{userId}
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (
+        existing().isPublic == true ||
+        (isSignedIn() && request.auth.uid == userId)
+      );
+      allow list: if existing().isPublic == true || (isSignedIn() && existing().uid == request.auth.uid);
+      allow create: if isVerifiedUser() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidUserProfile(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidUserProfile(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'displayName', 'bio', 'avatarColor', 'experienceLevel',
+          'preferredLanguage', 'learningMode', 'regionLabel', 'availability',
+          'isPublic', 'onboardingCompleted', 'interests', 'updatedAt'
+        ]);
+      allow delete: if isVerifiedUser() && isValidId(userId) && request.auth.uid == userId;
+
+      // Subcollection: /users/{userId}/private/{docId}
+      match /private/{docId} {
+        allow get: if isSignedIn() && isValidId(userId) && isValidId(docId) && request.auth.uid == userId &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow list: if isSignedIn() && request.auth.uid == userId && existing().uid == request.auth.uid;
+        allow create: if isVerifiedUser() &&
+          isValidId(userId) &&
+          isValidId(docId) &&
+          request.auth.uid == userId &&
+          isValidUserPrivateSettings(incoming()) &&
+          incoming().updatedAt == request.time &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow update: if isVerifiedUser() &&
+          isValidId(userId) &&
+          isValidId(docId) &&
+          request.auth.uid == userId &&
+          isValidUserPrivateSettings(incoming()) &&
+          incoming().uid == existing().uid &&
+          incoming().updatedAt == request.time &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'emailNotifications', 'exchangeAlerts', 'communityUpdates', 'allowDirectRequests', 'updatedAt'
+          ]) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow delete: if isVerifiedUser() && isValidId(userId) && isValidId(docId) && request.auth.uid == userId;
+      }
+    }
+
+    // Collection 2: /skills/{skillId}
+    match /skills/{skillId} {
+      allow get: if isValidId(skillId) && (
+        existing().type == 'teach' ||
+        existing().type == 'learn' ||
+        (isSignedIn() && existing().ownerId == request.auth.uid)
+      );
+      allow list: if existing().type == 'teach' || existing().type == 'learn' || (isSignedIn() && existing().ownerId == request.auth.uid);
+      allow create: if isVerifiedUser() &&
+        isValidId(skillId) &&
+        isValidSkillRecord(incoming()) &&
+        incoming().id == skillId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+      allow update: if isVerifiedUser() &&
+        isValidId(skillId) &&
+        isValidSkillRecord(incoming()) &&
+        existing().ownerId == request.auth.uid &&
+        incoming().id == existing().id &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'ownerName', 'title', 'category', 'type', 'level', 'description', 'deliveryMode', 'updatedAt'
+        ]);
+      allow delete: if isVerifiedUser() && isValidId(skillId) && existing().ownerId == request.auth.uid;
+    }
+
+    // Collection 3: /skillExchanges/{exchangeId}
+    match /skillExchanges/{exchangeId} {
+      allow get: if isSignedIn() && isValidId(exchangeId) && (
+        existing().requesterId == request.auth.uid ||
+        existing().receiverId == request.auth.uid
+      );
+      allow list: if isSignedIn() && (
+        existing().requesterId == request.auth.uid ||
+        existing().receiverId == request.auth.uid
+      );
+      allow create: if isVerifiedUser() &&
+        isValidId(exchangeId) &&
+        isValidSkillExchangeShape(incoming()) &&
+        incoming().id == exchangeId &&
+        incoming().requesterId == request.auth.uid &&
+        incoming().status == 'Pending' &&
+        incoming().completionNotes == '' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(incoming().requesterId)) &&
+        exists(/databases/$(database)/documents/users/$(incoming().receiverId));
+      allow update: if isVerifiedUser() &&
+        isValidId(exchangeId) &&
+        isValidSkillExchangeShape(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().requesterId == existing().requesterId &&
+        incoming().receiverId == existing().receiverId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        // Terminal State Lock: Completed, Declined, and Cancelled cannot be modified
+        existing().status != 'Completed' &&
+        existing().status != 'Declined' &&
+        existing().status != 'Cancelled' && (
+          // Action 1: Receiver accepts or declines a Pending request
+          (
+            request.auth.uid == existing().receiverId &&
+            existing().status == 'Pending' &&
+            (incoming().status == 'Accepted' || incoming().status == 'Declined') &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])
+          ) ||
+          // Action 2: Requester cancels their own Pending request
+          (
+            request.auth.uid == existing().requesterId &&
+            existing().status == 'Pending' &&
+            incoming().status == 'Cancelled' &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])
+          ) ||
+          // Action 3: Authorized participant marks an Accepted exchange as Completed
+          (
+            (request.auth.uid == existing().requesterId || request.auth.uid == existing().receiverId) &&
+            existing().status == 'Accepted' &&
+            incoming().status == 'Completed' &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'completionNotes', 'updatedAt'])
+          )
+        );
+      allow delete: if false;
+
+      // Subcollection: /skillExchanges/{exchangeId}/messages/{messageId}
+      match /messages/{messageId} {
+        allow get: if isSignedIn() && isValidId(exchangeId) && isValidId(messageId) && (
+          get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.requesterId == request.auth.uid ||
+          get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.receiverId == request.auth.uid
+        );
+        allow list: if isSignedIn() && existing().exchangeId == exchangeId && (
+          existing().requesterId == request.auth.uid ||
+          existing().receiverId == request.auth.uid
+        );
+        allow create: if isVerifiedUser() &&
+          isValidId(exchangeId) &&
+          isValidId(messageId) &&
+          isValidExchangeMessage(incoming()) &&
+          incoming().id == messageId &&
+          incoming().exchangeId == exchangeId &&
+          incoming().createdAt == request.time &&
+          get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.requesterId == incoming().requesterId &&
+          get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.receiverId == incoming().receiverId && (
+            get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.requesterId == request.auth.uid ||
+            get(/databases/$(database)/documents/skillExchanges/$(exchangeId)).data.receiverId == request.auth.uid
+          );
+        allow update, delete: if false;
+      }
+    }
+
+    // Collection 4: /learningGoals/{goalId}
+    match /learningGoals/{goalId} {
+      allow get: if isSignedIn() && isValidId(goalId) && existing().ownerId == request.auth.uid;
+      allow list: if isSignedIn() && existing().ownerId == request.auth.uid;
+      allow create: if isVerifiedUser() &&
+        isValidId(goalId) &&
+        isValidLearningGoal(incoming()) &&
+        incoming().id == goalId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+      allow update: if isVerifiedUser() &&
+        isValidId(goalId) &&
+        isValidLearningGoal(incoming()) &&
+        existing().ownerId == request.auth.uid &&
+        incoming().id == existing().id &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'skillTitle', 'category', 'targetSessions', 'completedSessions',
+          'progressPercent', 'notes', 'status', 'updatedAt'
+        ]);
+      allow delete: if isVerifiedUser() && isValidId(goalId) && existing().ownerId == request.auth.uid;
+    }
+
+    // Collection 5: /learningActivities/{activityId}
+    match /learningActivities/{activityId} {
+      allow get: if isSignedIn() && isValidId(activityId) && existing().ownerId == request.auth.uid;
+      allow list: if isSignedIn() && existing().ownerId == request.auth.uid;
+      allow create: if isVerifiedUser() &&
+        isValidId(activityId) &&
+        isValidLearningActivity(incoming()) &&
+        incoming().id == activityId &&
+        incoming().createdAt == request.time &&
+        exists(/databases/$(database)/documents/learningGoals/$(incoming().goalId)) &&
+        get(/databases/$(database)/documents/learningGoals/$(incoming().goalId)).data.ownerId == request.auth.uid;
+      allow update: if false;
+      allow delete: if isVerifiedUser() && isValidId(activityId) && existing().ownerId == request.auth.uid;
+    }
+
+    // Collection 6: /notifications/{notificationId}
+    match /notifications/{notificationId} {
+      allow get: if isSignedIn() && isValidId(notificationId) && existing().recipientId == request.auth.uid;
+      allow list: if isSignedIn() && existing().recipientId == request.auth.uid;
+      allow create: if isVerifiedUser() &&
+        isValidId(notificationId) &&
+        isValidNotificationItem(incoming()) &&
+        incoming().id == notificationId &&
+        incoming().senderId == request.auth.uid &&
+        incoming().isRead == false &&
+        incoming().createdAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(incoming().recipientId));
+      allow update: if isVerifiedUser() &&
+        isValidId(notificationId) &&
+        isValidNotificationItem(incoming()) &&
+        existing().recipientId == request.auth.uid &&
+        incoming().id == existing().id &&
+        incoming().recipientId == existing().recipientId &&
+        incoming().senderId == existing().senderId &&
+        incoming().type == existing().type &&
+        incoming().title == existing().title &&
+        incoming().body == existing().body &&
+        incoming().linkPath == existing().linkPath &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['isRead']);
+      allow delete: if isVerifiedUser() && isValidId(notificationId) && existing().recipientId == request.auth.uid;
+    }
+
+    // Collection 7: /connections/{connectionId}
+    match /connections/{connectionId} {
+      allow get: if isSignedIn() && isValidId(connectionId) && (
+        existing().initiatorId == request.auth.uid ||
+        existing().peerId == request.auth.uid
+      );
+      allow list: if isSignedIn() && (
+        existing().initiatorId == request.auth.uid ||
+        existing().peerId == request.auth.uid
+      );
+      allow create: if isVerifiedUser() &&
+        isValidId(connectionId) &&
+        isValidPeerConnection(incoming()) &&
+        incoming().id == connectionId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(incoming().initiatorId)) &&
+        exists(/databases/$(database)/documents/users/$(incoming().peerId));
+      allow update: if isVerifiedUser() &&
+        isValidId(connectionId) &&
+        isValidPeerConnection(incoming()) &&
+        existing().initiatorId == request.auth.uid &&
+        incoming().id == existing().id &&
+        incoming().initiatorId == existing().initiatorId &&
+        incoming().peerId == existing().peerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+      allow delete: if isVerifiedUser() && isValidId(connectionId) && existing().initiatorId == request.auth.uid;
+    }
+  }
+}

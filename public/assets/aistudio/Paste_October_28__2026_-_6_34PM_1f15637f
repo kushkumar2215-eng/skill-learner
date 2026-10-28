@@ -1,0 +1,888 @@
+# BUILD A COMPLETE MODERN RESPONSIVE WEB APPLICATION — "SKILL LEARNER"
+
+## 1. PROJECT OVERVIEW
+
+Build a complete, modern, responsive, mobile-first web application named **Skill Learner**.
+
+Brand tagline: **Teach. Learn. Connect. Grow.**
+
+Skill Learner is a community-based skill-sharing platform where people can discover skills, teach what they know, learn from others, connect with like-minded people, exchange knowledge, track their learning progress, and showcase verified achievements.
+
+The platform must be a real, functional web application, not just a static UI design or landing page.
+
+The design must be professional, visually attractive, accessible, scalable, secure, and suitable for real-world use.
+
+## 2. CORE OBJECTIVES
+
+The application must allow users to:
+
+- Create an account and securely sign in.
+- Create and customize their personal profiles.
+- Add skills they can teach.
+- Select skills they want to learn.
+- Discover people based on skills, interests, and location preferences.
+- Send and manage skill-exchange requests.
+- Connect with other learners and teachers.
+- Track learning progress.
+- Earn achievements and badges based on actual completed activities.
+- Join community learning activities.
+- Receive notifications about important events.
+- Manage their dashboard, profile, privacy, and account settings.
+
+Make the experience beginner-friendly so that even someone who has never used a skill-sharing platform can understand it.
+
+## 3. BRAND IDENTITY AND VISUAL DESIGN
+
+Create a distinctive and memorable brand identity for Skill Learner.
+
+Brand characteristics:
+- Modern
+- Minimal
+- Friendly
+- Trustworthy
+- Educational
+- Community-oriented
+- Technology-driven
+
+Create a professional logo using the letter "S" or a combination of learning, connection, and growth symbolism.
+
+Use a consistent design system with:
+- A carefully selected primary and secondary color palette.
+- Readable typography.
+- Consistent spacing and sizing.
+- Rounded cards and buttons.
+- Subtle shadows and borders.
+- Clean icons.
+- Smooth but restrained animations.
+- Clear visual hierarchy.
+
+Avoid excessive gradients, unnecessary animations, cluttered layouts, and generic template-like design.
+
+The website should look polished on both mobile and desktop screens.
+
+## 4. RESPONSIVE LAYOUT
+
+Implement a mobile-first responsive design.
+
+Desktop:
+- Sidebar navigation or a suitable responsive navigation layout.
+- Main content area.
+- Optional contextual panels where useful.
+- Proper use of available screen space.
+
+Mobile:
+- Compact header.
+- Collapsible navigation or bottom navigation.
+- Touch-friendly buttons and forms.
+- Responsive cards and lists.
+- No horizontal overflow.
+- Forms and dialogs optimized for small screens.
+
+Test the layout at mobile, tablet, laptop, and desktop sizes.
+
+## 5. PUBLIC LANDING PAGE
+
+Create an attractive landing page for visitors who are not signed in.
+
+Include:
+
+- Skill Learner logo and navigation.
+- Hero section with a strong headline.
+- A short explanation of the platform.
+- Primary "Start Learning" CTA.
+- Secondary "Teach a Skill" CTA.
+- Search or skill-discovery preview.
+- Featured skills.
+- How Skill Learner works.
+- Benefits for learners and teachers.
+- Community highlights.
+- Achievement and progress previews.
+- Frequently asked questions.
+- Footer with About, Contact, Privacy Policy, Terms, and other relevant links.
+
+Do not use fabricated user counts, testimonials, ratings, or statistics as if they were real. Use clearly identified demo content where necessary.
+
+## 6. AUTHENTICATION
+
+Implement functional authentication.
+
+Include:
+- Sign-up page.
+- Login page.
+- Logout functionality.
+- Password visibility toggle.
+- Password reset flow.
+- Form validation.
+- Useful error messages.
+- Loading states.
+- Protected authenticated routes.
+- Session persistence where supported.
+
+Prefer Firebase Authentication if using the Firebase backend.
+
+Support email and password authentication. Add Google sign-in only if the required provider configuration is available.
+
+Never store plaintext passwords or expose secret credentials in frontend code.
+
+If authentication configuration is missing, clearly explain what must be configured. Do not simulate successful real authentication without a working authentication provider.
+
+## 7. USER ONBOARDING
+
+After registration, guide users through an onboarding flow.
+
+Collect only necessary information, such as:
+- Display name.
+- Profile photo, optionally.
+- Short introduction.
+- Skills they can teach.
+- Skills they want to learn.
+- Experience level.
+- Learning interests.
+- Preferred language.
+- Optional location or online-learning preference.
+
+Allow users to skip optional questions and edit their choices later.
+
+Show onboarding progress and save completed steps appropriately.
+
+## 8. USER PROFILE
+
+Each user should have a personal profile page containing:
+
+- Profile photo or avatar.
+- Display name.
+- Short biography.
+- Skills offered.
+- Skills being learned.
+- Experience levels.
+- Learning interests.
+- Achievements earned.
+- Completed learning activities.
+- Availability preferences.
+- Public profile visibility settings.
+
+Allow users to edit their own profile.
+
+Users must not be able to edit another user's private profile data or impersonate another account.
+
+Do not expose private email addresses, precise location, or other sensitive information on public profiles.
+
+## 9. SKILLS MANAGEMENT
+
+Create a comprehensive skills management system.
+
+Users should be able to:
+- Add a skill they can teach.
+- Add a skill they want to learn.
+- Edit skill details.
+- Remove a skill.
+- Select a skill category.
+- Set their experience level.
+- Write a short skill description.
+- Indicate whether they are a beginner, intermediate learner, or advanced practitioner.
+
+Provide sensible categories, including:
+- Programming and Technology
+- Web Development
+- Design and Creativity
+- Business and Entrepreneurship
+- Communication
+- Languages
+- Music and Arts
+- Photography and Video
+- Education and Tutoring
+- Personal Development
+- Digital Marketing
+- Other Skills
+
+Make categories manageable and allow additional categories to be introduced later.
+
+## 10. SKILL DISCOVERY AND SEARCH
+
+Create a powerful skill discovery experience.
+
+Users should be able to:
+- Search for skills by name.
+- Browse categories.
+- Filter by experience level.
+- Find people offering a particular skill.
+- Find people who want to learn a particular skill.
+- Filter by online-learning preference.
+- Sort results by relevance.
+- View matching user profiles.
+- Open a profile to learn more.
+
+Search must be connected to actual available application data when the backend is configured.
+
+Include useful empty states when no matching skills or people are found.
+
+Do not show fabricated search results as real users.
+
+## 11. SKILL EXCHANGE SYSTEM
+
+This is one of the most important features of Skill Learner.
+
+Allow a user to request a skill exchange with another user.
+
+Each exchange request should include:
+- Requesting user.
+- Receiving user.
+- Skill offered.
+- Skill requested.
+- Optional introductory message.
+- Creation timestamp.
+- Current status.
+
+Support these statuses:
+- Pending
+- Accepted
+- Declined
+- Cancelled
+- Completed
+
+Users should be able to:
+- Send requests.
+- View sent requests.
+- View received requests.
+- Accept or decline requests.
+- Cancel their own pending requests.
+- View accepted exchanges.
+- Mark an exchange as completed through a suitable completion workflow.
+
+Validate all status transitions.
+
+Only authorized participants should be able to access or update an exchange.
+
+Prevent duplicate or invalid requests where appropriate.
+
+Do not automatically mark an exchange as completed without a valid user action or configured verification process.
+
+## 12. CONNECTIONS AND COMMUNITY
+
+Build a community section where users can discover other learners and teachers.
+
+Include:
+- Suggested people based on shared interests.
+- Skill-based recommendations.
+- Community learning opportunities.
+- User profile previews.
+- Connection or collaboration actions.
+- Community activity updates.
+
+Make recommendations based on available data and explain when recommendations are only sample data.
+
+Do not claim that a connection has been established unless the corresponding operation succeeds.
+
+## 13. DASHBOARD
+
+Create a personalized dashboard for signed-in users.
+
+Display:
+- Welcome message.
+- Profile completion status.
+- Skills offered.
+- Skills being learned.
+- Pending exchange requests.
+- Accepted exchanges.
+- Active learning activities.
+- Recently viewed skills, if supported.
+- Learning progress.
+- Earned achievements.
+- Recommended skills and people.
+- Recent notifications.
+- Quick actions.
+
+Every dashboard card, button, and navigation item should have a meaningful function.
+
+Do not use hardcoded statistics as though they were the current user's real activity.
+
+Show appropriate empty states for new users.
+
+## 14. LEARNING PROGRESS
+
+Allow users to track their learning journey.
+
+Include:
+- Learning goals.
+- Skill-specific progress.
+- Learning milestones.
+- Completed learning sessions or activities.
+- Notes or reflections, where appropriate.
+- Completion dates.
+- Progress visualization.
+
+Progress must be based on real saved activity or clearly labeled demo data.
+
+Allow users to update their own learning records.
+
+Use clear progress indicators without misleading users about their actual proficiency.
+
+## 15. ACHIEVEMENTS AND BADGES
+
+Create an achievement system to recognize meaningful participation.
+
+Possible achievements:
+- First Skill Added.
+- First Learning Goal Created.
+- First Skill Exchange Requested.
+- First Exchange Accepted.
+- First Learning Activity Completed.
+- First Skill Exchange Completed.
+- Community Contributor.
+- Consistent Learner.
+
+Each achievement should have:
+- A title.
+- A description.
+- A suitable icon.
+- An earning condition.
+- An earned status.
+- An earned timestamp when applicable.
+
+Award achievements only when their conditions are met.
+
+Do not describe a user as verified merely because they created an account or earned an ordinary badge.
+
+If a verification feature is implemented, explain what is verified and how verification works.
+
+## 16. NOTIFICATIONS
+
+Build an in-app notification system.
+
+Notify users about relevant events, including:
+- New exchange requests.
+- Accepted or declined requests.
+- Exchange status changes.
+- Relevant community updates.
+- Earned achievements.
+- Important account activity.
+
+Include:
+- Notification list.
+- Read and unread states.
+- Mark-as-read functionality.
+- Mark-all-as-read functionality where appropriate.
+- Links to the relevant application page.
+- Empty and loading states.
+
+Persist notifications when using a real backend.
+
+Avoid duplicate notifications when the same event is processed more than once.
+
+## 17. MESSAGING AND CONTACT
+
+Provide a suitable way for users to communicate about a skill exchange.
+
+If implementing in-app messaging, include:
+- Conversation list.
+- Message history.
+- Message input.
+- Timestamps.
+- Empty states.
+- Appropriate access controls.
+
+Store messages securely and allow only authorized conversation participants to read them.
+
+If full messaging is not configured, provide a functional alternative such as an exchange request with an introductory message.
+
+Do not create fake conversations or imply that a message was delivered when it was not.
+
+## 18. WHATSAPP INVITATION
+
+Add an optional "Invite Friends" feature.
+
+Allow users to share the Skill Learner website through a WhatsApp share link or the device's supported sharing interface.
+
+Use the actual deployed website URL when available.
+
+If the application has not been deployed, clearly indicate that the share URL must be configured.
+
+Do not automatically send messages to contacts or access a user's contact list without explicit permission.
+
+## 19. USER SETTINGS AND PRIVACY
+
+Create a settings page with appropriate controls.
+
+Include:
+- Profile settings.
+- Account settings.
+- Password or authentication management.
+- Notification preferences.
+- Profile visibility.
+- Learning preferences.
+- Optional location preferences.
+- Account deletion flow.
+
+Apply privacy settings consistently across profile discovery, recommendations, and other public-facing pages.
+
+Ask for confirmation before destructive actions.
+
+Where account deletion requires backend processing, implement and test the actual deletion workflow rather than simply removing a UI element.
+
+## 20. NAVIGATION AND ROUTING
+
+Create a consistent navigation system.
+
+Provide routes or equivalent views for:
+- Home
+- Discover Skills
+- Teach a Skill
+- Community
+- Skill Exchange
+- Dashboard
+- Notifications
+- Profile
+- Settings
+- Login
+- Sign Up
+- Password Reset
+- About
+- Contact
+- Privacy Policy
+- Terms of Service
+
+Use suitable route protection for authenticated pages.
+
+Redirect users appropriately after login and logout.
+
+Ensure browser refreshes do not break valid routes.
+
+Provide a useful not-found page.
+
+Every visible navigation element must lead to the correct destination.
+
+## 21. DATABASE AND BACKEND
+
+Use a real backend for persistent application functionality.
+
+Prefer Firebase when suitable, including:
+- Firebase Authentication.
+- Cloud Firestore.
+- Firebase Storage for profile images, if required.
+- Cloud Functions or trusted server-side logic for sensitive operations, if needed.
+
+Suggested data collections:
+- users
+- skills
+- skillExchanges
+- connections
+- learningGoals
+- learningActivities
+- achievements
+- notifications
+- conversations
+- messages
+
+Adapt the schema as necessary to the chosen architecture.
+
+Use appropriate document IDs, timestamps, ownership fields, relationships, and validation.
+
+Do not store everything only in React component state or browser memory if it is supposed to persist between sessions.
+
+Do not expose private API keys, service-account credentials, or privileged backend credentials in client-side code.
+
+If Firebase or another backend is not configured, build a clearly identified development mode and provide exact setup instructions. Do not pretend that persistent backend functionality is already working.
+
+## 22. FIRESTORE SECURITY
+
+If Firebase Firestore is used, create security rules based on authenticated identity and resource ownership.
+
+Rules must ensure:
+- Users can update only permitted fields of their own profiles.
+- Private user information is not publicly readable.
+- Only authorized participants can access an exchange.
+- Only permitted participants can update an exchange.
+- Messages are accessible only to conversation participants.
+- Notifications cannot be forged or read by unauthorized users.
+- Achievements cannot be self-awarded through unrestricted client writes.
+- Administrative privileges cannot be granted by ordinary users.
+
+Validate important business rules on a trusted backend when necessary.
+
+Do not use unrestricted production rules such as allowing every user to read and write every document.
+
+Include instructions for configuring and testing security rules.
+
+## 23. REUSABLE COMPONENTS
+
+Build a maintainable component structure.
+
+Create reusable components where appropriate:
+- Header
+- Navigation
+- Sidebar
+- Mobile navigation
+- Footer
+- Buttons
+- Form fields
+- Skill cards
+- User cards
+- Profile avatar
+- Achievement badges
+- Progress indicators
+- Notification items
+- Exchange request cards
+- Modal dialogs
+- Toast messages
+- Loading indicators
+- Empty states
+- Error states
+- Confirmation dialogs
+
+Avoid unnecessary duplication.
+
+Use clear component names and a logical project folder structure.
+
+## 24. FORM VALIDATION
+
+All forms must include appropriate validation.
+
+Validate:
+- Required fields.
+- Email format.
+- Password requirements.
+- Skill names.
+- Message length.
+- Invalid selections.
+- Duplicate operations where relevant.
+
+Display helpful inline error messages.
+
+Preserve valid user input when an error occurs.
+
+Prevent accidental double submissions.
+
+Never expose internal stack traces or sensitive implementation details to users.
+
+## 25. LOADING, EMPTY, AND ERROR STATES
+
+Every data-driven page must handle:
+- Initial loading.
+- Empty data.
+- Successful operations.
+- Failed requests.
+- Network problems.
+- Authentication failures.
+- Permission errors.
+- Missing or deleted records.
+
+Use skeleton loaders or subtle loading indicators where appropriate.
+
+Show clear messages explaining what users can do next.
+
+Provide retry actions when useful.
+
+Never leave the user facing a blank screen when a recoverable error occurs.
+
+## 26. SEARCH AND FILTER PERFORMANCE
+
+Implement efficient search and filtering.
+
+Use database queries and indexes where appropriate.
+
+Avoid loading the entire database unnecessarily.
+
+Use pagination or incremental loading for large result sets.
+
+Debounce search input when useful.
+
+Handle missing values and special characters safely.
+
+Keep the search interface responsive and intuitive.
+
+## 27. ACCESSIBILITY
+
+Follow good accessibility practices.
+
+Include:
+- Semantic HTML.
+- Proper heading hierarchy.
+- Accessible form labels.
+- Keyboard navigation.
+- Visible focus states.
+- Sufficient color contrast.
+- Accessible modal behavior.
+- Alternative text for meaningful images.
+- Screen-reader-friendly status messages.
+- Reduced-motion support where practical.
+
+Do not rely on color alone to communicate status.
+
+## 28. SECURITY AND DATA VALIDATION
+
+Follow secure development practices.
+
+- Validate all user-controlled data.
+- Enforce authorization on the backend.
+- Protect against unauthorized record access.
+- Avoid unsafe HTML rendering.
+- Use secure authentication practices.
+- Avoid exposing sensitive information in logs.
+- Handle file uploads safely.
+- Apply appropriate rate limits to sensitive operations.
+- Do not trust client-provided role or achievement claims.
+- Keep production secrets out of source code.
+- Provide safe error handling.
+
+Do not claim that a system is completely secure without appropriate testing.
+
+## 29. TECHNOLOGY STACK
+
+Use the technology stack supported by Google AI Studio's current application-building environment.
+
+Prefer:
+- React.
+- TypeScript where supported.
+- Modern CSS or a suitable styling framework.
+- Reusable components.
+- A supported routing solution.
+- Firebase Authentication and Firestore where configured.
+- Appropriate form validation and icon libraries.
+
+Use compatible, maintained dependencies.
+
+Do not introduce unnecessary libraries.
+
+Follow the actual project environment rather than assuming that every package or service is already installed.
+
+## 30. REAL FUNCTIONALITY REQUIREMENT
+
+This requirement is critical.
+
+Do not build a website consisting only of attractive screens.
+
+Every major feature must be connected to its intended behavior.
+
+Examples:
+- Signup must use the configured authentication provider.
+- Login must authenticate the user.
+- Profile updates must save data.
+- Skill creation must persist the skill.
+- Search must use actual available records.
+- Exchange requests must be stored and managed.
+- Accept and decline actions must update authorized records.
+- Learning progress must persist.
+- Achievements must follow defined conditions.
+- Notifications must reflect real application events.
+- Logout must end the user's authenticated session.
+- Settings must save their supported preferences.
+
+If a feature requires credentials or external configuration, implement the necessary integration points and clearly explain the remaining setup.
+
+Do not display success messages when an operation fails.
+
+## 31. SAMPLE DATA
+
+Use sample data only when needed for development or preview.
+
+Clearly separate demo data from real user data.
+
+Never silently present sample users, fabricated ratings, fake achievements, or invented community activity as genuine.
+
+Provide an empty state for new installations without sample data.
+
+If sample data is used, explain how to remove it before production deployment.
+
+## 32. DEPLOYMENT READINESS
+
+Prepare the application for deployment.
+
+Include:
+- Production build configuration.
+- Environment variable documentation.
+- Backend configuration instructions.
+- Authentication provider setup.
+- Database setup.
+- Security rules.
+- Storage configuration where needed.
+- Deployment instructions for a supported hosting platform.
+- Guidance for configuring the production website URL.
+- A basic production-readiness checklist.
+
+Do not claim that the website has been published unless deployment has actually succeeded.
+
+## 33. TESTING REQUIREMENTS
+
+Test the application before considering it complete.
+
+Check:
+- Signup and login flows.
+- Authentication persistence.
+- Logout.
+- Protected routes.
+- Profile editing.
+- Skill creation and deletion.
+- Search and filtering.
+- Exchange request creation.
+- Accept and decline operations.
+- Learning progress updates.
+- Achievement conditions.
+- Notifications.
+- Privacy and authorization.
+- Responsive layouts.
+- Form validation.
+- Loading and error states.
+- Navigation links.
+- Browser refresh behavior.
+- Production build.
+
+Fix discovered errors where possible.
+
+Do not claim tests passed if they were not actually run.
+
+## 34. PERFORMANCE
+
+Optimize for a smooth experience.
+
+Use:
+- Efficient rendering.
+- Lazy loading where appropriate.
+- Optimized images.
+- Reasonable component sizes.
+- Pagination for large datasets.
+- Appropriate loading states.
+- Minimal unnecessary dependencies.
+- Sensible caching where supported.
+
+Avoid unnecessary network requests and repeated database reads.
+
+Ensure the application remains usable on slower connections and modest devices.
+
+## 35. USER EXPERIENCE
+
+The website should be intuitive for beginners.
+
+Provide:
+- Clear calls to action.
+- Helpful tooltips when needed.
+- Useful empty-state guidance.
+- Confirmation for destructive operations.
+- Consistent feedback after actions.
+- Logical page transitions.
+- Predictable navigation.
+- Easy access to the user's learning goals and active exchanges.
+
+Do not overwhelm new users with too many options at once.
+
+## 36. ABOUT AND CONTACT
+
+Create an About page explaining Skill Learner's mission: helping people learn from one another and grow through skill sharing.
+
+Create a Contact page with a validated contact form if a suitable submission backend is configured.
+
+If no backend exists, clearly state the required configuration instead of pretending that messages are being sent.
+
+Do not invent a business address, phone number, or official email address.
+
+## 37. LEGAL AND RESPONSIBLE USE
+
+Include appropriate Privacy Policy and Terms of Service pages.
+
+Explain the information the application collects, how it is used, and what privacy controls users have.
+
+Provide suitable reporting or blocking mechanisms if the platform supports user-to-user interactions.
+
+Design the platform to discourage spam, harassment, impersonation, and misleading skill claims.
+
+Do not claim legal compliance without reviewing the actual implementation and applicable requirements.
+
+## 38. VISUAL CONSISTENCY
+
+Maintain a consistent design system across the entire application.
+
+Use consistent:
+- Colors.
+- Typography.
+- Spacing.
+- Buttons.
+- Input fields.
+- Card styles.
+- Icons.
+- Navigation.
+- Page titles.
+- Feedback messages.
+
+Avoid unrelated visual styles between different pages.
+
+Use subtle interaction feedback and meaningful animations.
+
+Ensure that visual polish never replaces actual functionality.
+
+## 39. PROJECT STRUCTURE AND MAINTAINABILITY
+
+Organize the code so another developer can understand and extend it.
+
+Separate:
+- UI components.
+- Pages and routes.
+- Authentication logic.
+- Database operations.
+- Business logic.
+- Types and interfaces.
+- Validation.
+- Styling.
+- Configuration.
+
+Avoid giant components where smaller reusable components are appropriate.
+
+Use meaningful variable names and handle errors consistently.
+
+Include comments for important or non-obvious logic.
+
+## 40. FINAL IMPLEMENTATION INSTRUCTIONS
+
+Build the complete Skill Learner application in the current Google AI Studio project.
+
+Start by inspecting the available project environment and choosing compatible technologies.
+
+Then:
+1. Implement the application structure.
+2. Build the landing page and responsive navigation.
+3. Implement authentication and onboarding.
+4. Build user profiles and skills management.
+5. Implement skill discovery and search.
+6. Build the skill-exchange workflow.
+7. Implement community features.
+8. Build the dashboard and learning progress.
+9. Add achievements and notifications.
+10. Implement settings and privacy controls.
+11. Connect the configured backend.
+12. Add loading, empty, success, and error states.
+13. Test all available flows.
+14. Fix build errors and broken interactions.
+15. Provide deployment and configuration instructions.
+
+If the project is too large to complete in one pass, implement it in logical stages while maintaining a working application. Preserve completed functionality when adding subsequent features.
+
+Do not replace working features with placeholders during later iterations.
+
+## 41. FINAL ACCEPTANCE CRITERIA
+
+The project is complete only when:
+
+- The Skill Learner branding is consistent.
+- The website is responsive across common screen sizes.
+- Navigation works.
+- Authentication works when configured.
+- Protected routes enforce access controls.
+- Users can manage their own profiles.
+- Skills can be added and discovered.
+- Skill-exchange requests follow the correct workflow.
+- Learning progress is saved.
+- Achievements follow actual completion conditions.
+- Notifications reflect supported events.
+- Backend security rules are appropriately configured.
+- Forms validate input.
+- Errors are handled gracefully.
+- No major buttons or links are inert.
+- Demo data is not confused with real data.
+- The production build succeeds where it can be tested.
+- Setup instructions identify any external configuration still required.
+
+## FINAL DIRECTIVE
+
+Create Skill Learner as a complete, polished, modern, responsive, functional skill-sharing platform that helps people teach, learn, connect, and grow.
+
+Prioritize real functionality, security, accessibility, maintainability, and a high-quality user experience over superficial visual effects.
+
+Begin implementation now. Do not merely describe the application or return a plan. Build the application in the current project, verify what works, and clearly identify anything that still requires external setup.
